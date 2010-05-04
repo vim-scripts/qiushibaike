@@ -1,0 +1,13 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=3083
+
+这个脚本实现了在vim上看糗事百科。
+需要环境：
+    python（默认的vim7.2是支持python2.4的，如果想要2.6的版本，请到  http://www.vimer.cn  下载&#65289;
+    BeautifulSoup
+使用方法：
+    JOKE            最新糗事
+    NEXTJOKE        下一页最新糗事
+    BESTJOKE        最糗糗事
+    NEXTBESTJOKE    下一页最糗糗事
+
+作者主页：http://www.vimer.cn
