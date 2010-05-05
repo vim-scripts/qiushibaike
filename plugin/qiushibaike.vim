@@ -64,7 +64,7 @@ def getBaiKe():
 		for art in tag.contents:
 			if isinstance(art,basestring) != True:
 				continue
-			tmpStr=art.encode("utf-8").replace("&nbsp;",' ')
+			tmpStr=art.encode(vim.eval("&encoding")).replace("&nbsp;",' ')
 			tmpStr=tmpStr.replace("",'')
 			tmpStr=tmpStr.replace("&quot;",'"')
 			strList=tmpStr.split("\n")   
