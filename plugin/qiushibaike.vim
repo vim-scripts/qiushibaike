@@ -47,8 +47,8 @@ from BeautifulSoup import BeautifulSoup
 def getBaiKe():
 	url=vim.eval("b:baikeurl")
 	user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
-	values = {'name' : 'Michael Foord',
-		'location' : 'Northampton',
+	values = {'name' : 'DanteZhu',
+		'location' : 'China',
 		'language' : 'Python' }
 	headers = { 'User-Agent' : user_agent }
 
