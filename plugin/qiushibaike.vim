@@ -43,6 +43,7 @@ import time
 import urllib
 import urllib2
 from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulStoneSoup
 
 def getBaiKe():
 	url=vim.eval("b:baikeurl")
@@ -56,7 +57,7 @@ def getBaiKe():
 	req = urllib2.Request(url, data, headers)
 	response = urllib2.urlopen(req)
 	the_page = response.read()
-	soup = BeautifulSoup(the_page)
+	soup = BeautifulSoup(the_page,convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
 
 	allTags = soup.findAll(attrs={'class' : 'qiushi_body article'})
 	for tag in allTags:
@@ -64,13 +65,12 @@ def getBaiKe():
 		for art in tag.contents:
 			if isinstance(art,basestring) != True:
 				continue
-			tmpStr=art.encode(vim.eval("&encoding")).replace("&nbsp;",' ')
+			tmpStr=art.encode(vim.eval("&encoding"))
 			tmpStr=tmpStr.replace("",'')
-			tmpStr=tmpStr.replace("&quot;",'"')
-			strList=tmpStr.split("\n")   
-			for line in strList:   
+			strList=tmpStr.split("\n")
+			for line in strList:
 				if len(line) > 0:
-					vim.current.buffer.append(line)   
+					vim.current.buffer.append(line)
 		vim.current.buffer.append("\n")
 		vim.current.buffer.append('#=============================================================================')
 
