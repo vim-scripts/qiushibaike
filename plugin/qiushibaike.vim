@@ -1,12 +1,26 @@
 "=============================================================================
-"  Author:          DanteZhu - http://www.vimer.cn
-"  Email:           dantezhu@vip.qq.com
-"  FileName:        qiushibaike.vim
-"  Description:     用VIM看糗事百科
-"  Version:         1.0
-"  LastChange:      2010-05-04 21:08:09
-"  History:
+"
+"     FileName: qiushibaike.vim
+"         Desc: 用vim看糗事百科
+"
+"       Author: dantezhu
+"        Email: zny2008@gmail.com
+"     HomePage: http://www.vimer.cn
+"
+"      Created: 2011-04-04 00:27:13
+"      Version: 0.0.2
+"      History:
+"               0.0.2 | dantezhu | 2011-04-04 00:27:34 | 增加是否设置代理的功
+"               能
+"               0.0.1 | dantezhu | 2011-04-04 00:27:13 | initialization
+"
 "=============================================================================
+
+
+if !exists('g:qiushibaike_proxy')
+    let g:qiushibaike_proxy=''
+endif
+
 function! SetBaiKeBuffer()
 let bkbuffloaded=bufloaded("baike")
 if !bkbuffloaded
@@ -67,6 +81,10 @@ def recurTags(tag):
         return `tag`
 
 def getBaiKe():
+    if len(vim.eval('g:qiushibaike_proxy')) > 0:
+        opener = urllib2.build_opener( urllib2.ProxyHandler({'http':vim.eval('g:qiushibaike_proxy')}) )
+        urllib2.install_opener( opener )
+
     url=vim.eval("b:baikeurl")
     user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
     values = {'name' : 'DanteZhu',
