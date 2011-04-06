@@ -26,17 +26,10 @@ endif
 let s:qb_bufname = 'qiushibaike'
 
 function! s:SetQBBuffer()
-    let qb_buf_loaded=bufloaded(s:qb_bufname)
-    if !qb_buf_loaded
-        execute "sp ".s:qb_bufname
+    if bufloaded(s:qb_bufname) > 0
+        execute "sb ".s:qb_bufname
     else
-        while 1
-            execute "normal \<c-w>w"
-            let cur_buf=bufname("%")
-            if cur_buf == s:qb_bufname
-                break
-            endif
-        endwhile
+        execute "new ".s:qb_bufname
     endif
     set wrap
     syn match       qbSplit "^\s*\zs#.*$"
