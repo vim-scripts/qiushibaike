@@ -8,8 +8,10 @@
 "     HomePage: http://www.vimer.cn
 "
 "      Created: 2011-04-04 00:27:13
-"      Version: 0.0.2
+"      Version: 0.0.3
 "      History:
+"               0.0.3 | dantezhu | 2011-04-06 10:10:39 | 优化参数命名，执行命
+"               令改为QB,QBN,QBBest,QBBestN
 "               0.0.2 | dantezhu | 2011-04-04 00:27:34 | 增加是否设置代理的功
 "               能
 "               0.0.1 | dantezhu | 2011-04-04 00:27:13 | initialization
@@ -21,34 +23,37 @@ if !exists('g:qiushibaike_proxy')
     let g:qiushibaike_proxy=''
 endif
 
-function! SetBaiKeBuffer()
-let bkbuffloaded=bufloaded("baike")
-if !bkbuffloaded
-    execute "sp baike"
-    execute "normal \Z"
-else
-    while 1
-        execute "normal \<c-w>w"
-        let currBuff=bufname("%")
-        if currBuff == "baike"
-            execute "normal \Z"
-            break
-        endif
-    endwhile
+let s:qb_bufname = 'qiushibaike'
 
-endif
+function! s:SetQBBuffer()
+    let qb_buf_loaded=bufloaded(s:qb_bufname)
+    if !qb_buf_loaded
+        execute "sp ".s:qb_bufname
+    else
+        while 1
+            execute "normal \<c-w>w"
+            let cur_buf=bufname("%")
+            if cur_buf == s:qb_bufname
+                break
+            endif
+        endwhile
+    endif
+    set wrap
+    syn match       qbSplit "^\s*\zs#.*$"
+    hi def link     qbSplit        Comment
+    set buftype=nofile
 endfunction
 
-function! KanXiaoHua(url,page)
-call SetBaiKeBuffer()
-let b:baikeurl=a:url
-let b:baikepage=a:page
+function! s:QiuShiBaiKe(url,page)
+call s:SetQBBuffer()
+let b:qb_url=a:url
+let b:qb_page=a:page
 if a:page == ""
-    let b:currbkpage=1
-    let b:baikeurl=b:baikeurl."/page/".b:currbkpage
+    let b:qb_cur_page=1
+    let b:qb_url=b:qb_url."/page/".b:qb_cur_page
 else
-    let b:currbkpage=b:currbkpage+1
-    let b:baikeurl=b:baikeurl."/page/".b:currbkpage
+    let b:qb_cur_page=b:qb_cur_page+1
+    let b:qb_url=b:qb_url."/page/".b:qb_cur_page
 endif
 python << EOF
 
@@ -78,14 +83,14 @@ def recurTags(tag):
         else:
             return ''
     else:
-        return `tag`
+        return repr(tag)
 
-def getBaiKe():
+def QBShow():
     if len(vim.eval('g:qiushibaike_proxy')) > 0:
         opener = urllib2.build_opener( urllib2.ProxyHandler({'http':vim.eval('g:qiushibaike_proxy')}) )
         urllib2.install_opener( opener )
 
-    url=vim.eval("b:baikeurl")
+    url=vim.eval("b:qb_url")
     user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
     values = {'name' : 'DanteZhu',
         'location' : 'China',
@@ -114,15 +119,11 @@ def getBaiKe():
 
 
 vim.current.buffer[:]=None
-getBaiKe()
+QBShow()
 EOF
-exe "set wrap"
-exe 'syn match      qbSplit "^\s*\zs#.*$"'
-"exe 'syn match      qbSplit    "\s\zs#.*$"'
-exe 'hi def link qbSplit        Comment'
 endfunction
 
-command! -nargs=0 JOKE :call KanXiaoHua("http://www.qiushibaike.com/groups/2/latest","")
-command! -nargs=0 NEXTJOKE :call KanXiaoHua("http://www.qiushibaike.com/groups/2/latest","N")
-command! -nargs=0 BESTJOKE :call KanXiaoHua("http://www.qiushibaike.com/groups/2/hottest/day","")
-command! -nargs=0 NEXTBESTJOKE :call KanXiaoHua("http://www.qiushibaike.com/groups/2/hottest/day","N")
+command! -nargs=0 QB        :call s:QiuShiBaiKe("http://www.qiushibaike.com/groups/2/latest","")
+command! -nargs=0 QBN       :call s:QiuShiBaiKe("http://www.qiushibaike.com/groups/2/latest","N")
+command! -nargs=0 QBHot     :call s:QiuShiBaiKe("http://www.qiushibaike.com/groups/2/hottest/day","")
+command! -nargs=0 QBHotN    :call s:QiuShiBaiKe("http://www.qiushibaike.com/groups/2/hottest/day","N")
