@@ -8,8 +8,10 @@
 "     HomePage: http://www.vimer.cn
 "
 "      Created: 2011-04-04 00:27:13
-"      Version: 0.0.4
+"      Version: 0.0.5
 "      History:
+"               0.0.5 | dantezhu | 2011-10-01 11:28:09 | 增加QBReset命令，去掉
+"               QBN和QBHotN命令
 "               0.0.4 | dantezhu | 2011-09-29 18:39:29 | 糗百改版，对应升级
 "               0.0.3 | dantezhu | 2011-04-06 10:10:39 | 优化参数命名，执行命
 "               令改为QB,QBN,QBBest,QBBestN
@@ -46,17 +48,23 @@ function! s:SetQBBuffer()
     set buftype=nofile
 endfunction
 
-function! s:QiuShiBaiKe(url,page)
-call s:SetQBBuffer()
-let b:qb_url=a:url
-let b:qb_page=a:page
-if a:page == ""
-    let b:qb_cur_page=1
-    let b:qb_url=b:qb_url."/page/".b:qb_cur_page
-else
+function! s:QBReset()
+    call s:SetQBBuffer()
+    let b:qb_cur_page=0
+python << EOF
+import vim
+vim.current.buffer[:]=None
+EOF
+endfunction
+
+function! s:QiuShiBaiKe(url)
+    call s:SetQBBuffer()
+    let b:qb_url=a:url
+    if !exists('b:qb_cur_page')
+        let b:qb_cur_page=0
+    endif
     let b:qb_cur_page=b:qb_cur_page+1
     let b:qb_url=b:qb_url."/page/".b:qb_cur_page
-endif
 python << EOF
 
 import vim
@@ -125,7 +133,6 @@ QBShow()
 EOF
 endfunction
 
-command! -nargs=0 QB        :call s:QiuShiBaiKe("http://www.qiushibaike.com/new2/late/20","")
-command! -nargs=0 QBN       :call s:QiuShiBaiKe("http://www.qiushibaike.com/new2/late/20","N")
-command! -nargs=0 QBHot     :call s:QiuShiBaiKe("http://www.qiushibaike.com/new2/hot/20","")
-command! -nargs=0 QBHotN    :call s:QiuShiBaiKe("http://www.qiushibaike.com/new2/hot/20","N")
+command! -nargs=0 QB        :call s:QiuShiBaiKe("http://www.qiushibaike.com/new2/late/20")
+command! -nargs=0 QBHot     :call s:QiuShiBaiKe("http://www.qiushibaike.com/new2/hot/20")
+command! -nargs=0 QBReset   :call s:QBReset()
