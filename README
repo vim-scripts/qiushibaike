@@ -2,12 +2,11 @@ This is a mirror of http://www.vim.org/scripts/script.php?script_id=3083
 
 这个脚本实现了在vim上看糗事百科。
 需要环境：
-    python（默认的vim7.2是支持python2.4的，如果想要2.6的版本，请到  http://www.vimer.cn  下载&#65289;
-    BeautifulSoup
+    python（默认的vim7.2是支持python2.4的，如果想要2.6的版本，请到  http://www.vimer.cn  下载）;
+    BeautifulSoup4
 使用方法：
-    QB                          最新糗事
-    QBN                         下一页最新糗事
-    QBHot                       最糗糗事
-    QBHotN                      下一页最糗糗事
+    QB                          最新糗事，第二次执行会自动翻页
+    QBHot                    最糗糗事，第二次执行会自动翻页
+    QBReset                重置页码为1  
 
 作者主页：http://www.vimer.cn

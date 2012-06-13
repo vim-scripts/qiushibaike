@@ -8,16 +8,18 @@
 "     HomePage: http://www.vimer.cn
 "
 "      Created: 2011-04-04 00:27:13
-"      Version: 0.0.5
+"      Version: 0.0.6
 "      History:
-"               0.0.5 | dantezhu | 2011-10-01 11:28:09 | 增加QBReset命令，去掉
-"               QBN和QBHotN命令
-"               0.0.4 | dantezhu | 2011-09-29 18:39:29 | 糗百改版，对应升级
-"               0.0.3 | dantezhu | 2011-04-06 10:10:39 | 优化参数命名，执行命
-"               令改为QB,QBN,QBBest,QBBestN
+"               0.0.1 | dantezhu | 2011-04-04 00:27:13 | initialization
 "               0.0.2 | dantezhu | 2011-04-04 00:27:34 | 增加是否设置代理的功
 "               能
-"               0.0.1 | dantezhu | 2011-04-04 00:27:13 | initialization
+"               0.0.3 | dantezhu | 2011-04-06 10:10:39 | 优化参数命名，执行命
+"               令改为QB,QBN,QBBest,QBBestN
+"               0.0.4 | dantezhu | 2011-09-29 18:39:29 | 糗百改版，对应升级
+"               0.0.5 | dantezhu | 2011-10-01 11:28:09 | 增加QBReset命令，去掉
+"               QBN和QBHotN命令
+"               0.0.6 | dantezhu | 2012-06-13 10:24:58 | 升级beautifulsoup至
+"               4.0，针对糗百改版改善匹配方法
 "
 "=============================================================================
 
@@ -25,6 +27,11 @@ if exists('g:loaded_qiushibaike')
     finish
 endif
 let g:loaded_qiushibaike = 1
+
+if !has('python')
+    echoerr "Error: qiushibaike.vim plugin requires Vim to be compiled with +python"
+    finish
+endif
 
 if !exists('g:qiushibaike_proxy')
     let g:qiushibaike_proxy=''
@@ -72,8 +79,7 @@ import time
 import urllib
 import urllib2
 import re
-from BeautifulSoup import BeautifulSoup,Tag,NavigableString
-from BeautifulSoup import BeautifulStoneSoup
+from bs4 import BeautifulSoup, Tag, NavigableString
 
 def recurTags(tag):
     if isinstance(tag,Tag):
@@ -97,8 +103,8 @@ def recurTags(tag):
 
 def QBShow():
     if len(vim.eval('g:qiushibaike_proxy')) > 0:
-        opener = urllib2.build_opener( urllib2.ProxyHandler({'http':vim.eval('g:qiushibaike_proxy')}) )
-        urllib2.install_opener( opener )
+        opener = urllib2.build_opener(urllib2.ProxyHandler({'http':vim.eval('g:qiushibaike_proxy')}))
+        urllib2.install_opener(opener)
 
     url=vim.eval("b:qb_url")
     timeout = float(vim.eval("g:qiushibaike_timeout"))
@@ -110,9 +116,9 @@ def QBShow():
     req = urllib2.Request(url, headers=headers)
     rsp = urllib2.urlopen(req, timeout=timeout)
     page = rsp.read()
-    soup = BeautifulSoup(page,convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
+    soup = BeautifulSoup(page)
 
-    allTags = soup.findAll('div',attrs={'class' : 'content'})
+    allTags = soup.find('div', attrs={'class':'col1'}).find_all('div',attrs={'class' : 'content'})
 
     for tag in allTags:
         for art in tag.contents:
@@ -130,6 +136,7 @@ def QBShow():
 
 vim.current.buffer[:]=None
 QBShow()
+
 EOF
 endfunction
 
