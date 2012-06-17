@@ -140,6 +140,6 @@ QBShow()
 EOF
 endfunction
 
-command! -nargs=0 QB        :call s:QiuShiBaiKe("http://www.qiushibaike.com/new2/late/20")
-command! -nargs=0 QBHot     :call s:QiuShiBaiKe("http://www.qiushibaike.com/new2/hot/20")
+command! -nargs=0 QB        :call s:QiuShiBaiKe("http://www.qiushibaike.com/late/20")
+command! -nargs=0 QBHot     :call s:QiuShiBaiKe("http://www.qiushibaike.com/8hr/20")
 command! -nargs=0 QBReset   :call s:QBReset()
